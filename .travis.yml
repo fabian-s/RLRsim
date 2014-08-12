@@ -1,6 +1,5 @@
 # copied from https://github.com/hadley/dplyr/blob/master/.travis.yml @ 2014/08/12
 language: c
-services: PostgreSQL
 
 before_install:
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
@@ -30,6 +29,4 @@ notifications:
   email:
     on_success: change
     on_failure: change
-env:
-  - RCPP=release PKG_CXXFLAGS="-g -O3 -Wall -pedantic"
-  # - RCPP=devel PKG_CXXFLAGS="-g -O3 -Wall -pedantic"
+
