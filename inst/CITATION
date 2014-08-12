@@ -1,0 +1,18 @@
+
+     citHeader("To cite package 'RLRsim' in publications please use:")
+     
+     citEntry(entry="Article",
+              title = "Size and power of tests for a zero random effect variance or polynomial
+               regression in additive and linear mixed models.",
+              author = personList(as.person("Fabian Scheipl"), as.person("Sonja Greven"), as.person("Helmut Kuechenhoff")),
+              year = "2008",
+              journal = "Computational Statistics & Data Analysis",
+              volume  = "52",
+         	  number  = "7",
+         	  pages   = "3283--3299",
+             
+              textVersion =
+              paste("Scheipl, F., Greven, S. and Kuechenhoff, H. (2008)", 
+                    "Size and power of tests for a zero random effect variance or polynomial
+                     regression in additive and linear mixed models.",
+                    "Computational Statistics & Data Analysis, 52(7):3283--3299."))
