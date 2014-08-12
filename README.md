@@ -10,18 +10,19 @@ conditionally Gaussian responses -- i.e., tests for questions like:
 * is this smooth effect significantly nonlinear?
 * is this smooth effect significantly different from a constant effect?
 
-The convenience functions `exactRLRT` and `exactLRT` can deal with fitted models from `lme4`, `lme` and `gamm4`.
-Workhorse functions `LRTSim` and `RLRTSim` accept design matrices as inputs directly and can thus be used more generally.
+The convenience functions `exactRLRT` and `exactLRT` can deal with fitted models from `lme4`, `nlme` and `gamm4`.
+Workhorse functions `LRTSim` and `RLRTSim` accept design matrices as inputs directly and can thus be used more generally to generate exact critical values for the corresponding
+(restricted) likelihood ratio tests.
 
 The theory behind these tests was first developed in
 
-Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
-linear mixed models with one variance component, *Journal of the Royal
+Crainiceanu, C. and Ruppert, D. (2004) [Likelihood ratio tests in
+linear mixed models with one variance component](http://people.orie.cornell.edu/~davidr/papers/asymptoticpaper2.pdf), *Journal of the Royal
 Statistical Society: Series B*, **66**,165--185.
 
-Power analysis and sensitivity studies for `RLRsim` can be found in
+Power analyses and sensitivity studies for `RLRsim` can be found in
 
-Scheipl, F., Greven, S. and Kuechenhoff, H. (2008) Size and power of tests
+Scheipl, F., Greven, S. and Kuechenhoff, H. (2008) [Size and power of tests
 for a zero random effect variance or polynomial regression in additive and
-linear mixed models.  *Computational Statistics &amp; Data Analysis*,
+linear mixed models](http://dx.doi.org/10.1016/j.csda.2007.10.022).  *Computational Statistics &amp; Data Analysis*,
 **52**(7):3283--3299.

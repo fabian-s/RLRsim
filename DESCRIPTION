@@ -7,8 +7,11 @@ Author: Fabian Scheipl, Ben Bolker
 Maintainer: Fabian Scheipl <fabian.scheipl@stat.uni-muenchen.de>
 Description: Rapid, simulation-based exact (restricted) likelihood ratio tests
     for testing the presence of variance components/nonparametric terms for
-    models fit with nlme::lme(),lme4::lmer(), mgcv::gamm() and SemiPar::spm()
+    models fit with nlme::lme(),lme4::lmer(), gamm4::gamm4(), mgcv::gamm() and
+    SemiPar::spm()
 License: GPL
+URL: https://github.com/fabian-s/RLRsim
+BugReports: https://github.com/fabian-s/RLRsim/issues
 Depends:
     R (>= 2.14.0),
     Rcpp (>= 0.11.1),
