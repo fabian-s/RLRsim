@@ -1,7 +1,7 @@
 RLRsim
 ======
   
-![](https://travis-ci.org/fabian-s/RLRsim.svg?branch=travis)
+![](https://travis-ci.org/fabian-s/RLRsim.svg?branch=master)
 
 R package for fast &amp; exact (restricted) likelihood ratio tests for mixed and additive models.
 
