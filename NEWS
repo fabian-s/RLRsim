@@ -1,0 +1,4 @@
+3.0
+-------
+*** now using Rcpp
+* removed terrible "browser()"-bug in extract.lmeDesign()
