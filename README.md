@@ -1,5 +1,7 @@
 RLRsim
 ======
+  
+![](https://travis-ci.org/fabian-s/RLRsim.svg?branch=travis)
 
 R package for fast &amp; exact (restricted) likelihood ratio tests for mixed and additive models.
 
@@ -10,7 +12,7 @@ conditionally Gaussian responses -- i.e., tests for questions like:
 * is this smooth effect significantly nonlinear?
 * is this smooth effect significantly different from a constant effect?
 
-The convenience functions `exactRLRT` and `exactLRT` can deal with fitted models from `lme4`, `nlme` and `gamm4`.
+The convenience functions `exactRLRT` and `exactLRT` can deal with fitted models from packages `lme4`, `nlme`,  `gamm4` and from `mgcv`'s `gamm()`-function.
 Workhorse functions `LRTSim` and `RLRTSim` accept design matrices as inputs directly and can thus be used more generally to generate exact critical values for the corresponding
 (restricted) likelihood ratio tests.
 
