@@ -1,8 +1,8 @@
 Package: RLRsim
 Type: Package
 Title: Exact (Restricted) Likelihood Ratio tests for mixed and additive models.
-Version: 3.0
-Date: 2014-08-12
+Version: 3.1
+Date: 2015-05-26
 Author: Fabian Scheipl, Ben Bolker
 Maintainer: Fabian Scheipl <fabian.scheipl@stat.uni-muenchen.de>
 Description: Rapid, simulation-based exact (restricted) likelihood ratio tests

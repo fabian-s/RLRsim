@@ -169,7 +169,11 @@
                           log.grid.lo = log.grid.lo, gridlength = gridlength, 
                           parallel = match.arg(parallel), 
                           ncpus = ncpus, cl = cl)
-        p <- mean(rlrt.obs < sample)
+      if (quantile(sample, 0.9) == 0) {
+        warning("Null distribution has mass ", mean(sample == 
+            0), " at zero.\n")
+      }
+      p <- mean(rlrt.obs < sample)
     }
     else p = 1
     RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 

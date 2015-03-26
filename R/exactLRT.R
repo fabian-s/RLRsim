@@ -123,8 +123,8 @@
                          parallel = match.arg(parallel), 
                          ncpus = ncpus, cl = cl)
         if (quantile(sample, 0.9) == 0) {
-            warning("Null distribution has", mean(sample == 
-                                                      0), "mass at zero.\n")
+            warning("Null distribution has mass ", mean(sample == 
+                                                      0), " at zero.\n")
         }
         p <- mean(lrt.obs < sample)
         RVAL <- list(statistic = c(LRT = lrt.obs), 
