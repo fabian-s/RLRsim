@@ -32,8 +32,7 @@ linear mixed models}.  \emph{Computational Statistics and Data Analysis},
 \bold{52}(7), 3283--3299.
 }
 \author{
-Maintainer: Fabian Scheipl <fabian.scheipl@stat.uni-muenchen.de>
-
+Fabian Scheipl (\email{fabian.scheipl@stat.uni-muenchen.de}),
   Ben Bolker
 }
 \keyword{package}
