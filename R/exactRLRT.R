@@ -117,6 +117,11 @@
     Z <- d$Z
     y <- d$y
     Vr <- d$Vr
+    if(all(Vr == 0)){
+      # this only happens if the estimate of the tested variance component is 0. 
+      # since we still want chol(cov2cor(Vr)) to work, this does the trick.
+      diag(Vr) <- 1
+    }
     K <- ncol(Z)
     n <- nrow(X)
     p <- ncol(X)
@@ -162,7 +167,7 @@
         rlrt.obs <- max(0, 2 * (logLik(mA, REML = TRUE)[1] - 
                                     logLik(m0, REML = TRUE)[1]))
     }
-    if (rlrt.obs != 0) {
+    p <- if (rlrt.obs != 0) {
         sample <- RLRTSim(X, Z, qrX=qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
                           lambda0 = 0, seed = seed, nsim = nsim, 
                           log.grid.hi = log.grid.hi, 
@@ -173,9 +178,10 @@
         warning("Null distribution has mass ", mean(sample == 
             0), " at zero.\n")
       }
-      p <- mean(rlrt.obs < sample)
-    }
-    else p = 1
+       mean(rlrt.obs < sample)
+    } else {
+      1
+    }  
     RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 
                  method = paste("simulated finite sample distribution of RLRT.\n
                                 (p-value based on", 
