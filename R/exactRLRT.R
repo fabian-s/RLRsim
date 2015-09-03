@@ -92,100 +92,100 @@
 #' 
 #' @export exactRLRT
 'exactRLRT' <- function(m, mA = NULL, m0 = NULL, seed = NA, 
-                        nsim = 10000, log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
-                        parallel = c("no", "multicore", "snow"), 
-                        ncpus = 1L, cl = NULL) {
-    if (class(m) == "spm") {
-        m <- m$fit
-        class(m) <- "lme"
-    }
-    if (class(m) %in% c("amer", "mer")) 
-        stop("Package <amer> and versions of <lme4> below lme4_1.0 are no longer supported.")
-    if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest")) 
-        stop("Invalid m specified. \n")
-    if ("REML" != switch(c.m, 
-                         lme = m$method, 
-                         lmerMod = ifelse(isREML(m), "REML", "ML"))){
-        message("Using restricted likelihood evaluated at ML estimators.")
-        message("Refit with method=\"REML\" for exact results.")	
-    }
-    
-    d <- switch(c.m, lme = extract.lmeDesign(m), 
-                lmerMod = extract.lmerModDesign(m))
-    X <- d$X
-    qrX <- qr(X)
-    Z <- d$Z
-    y <- d$y
-    Vr <- d$Vr
-    if(all(Vr == 0)){
-      # this only happens if the estimate of the tested variance component is 0. 
-      # since we still want chol(cov2cor(Vr)) to work, this does the trick.
-      diag(Vr) <- 1
-    }
-    K <- ncol(Z)
-    n <- nrow(X)
-    p <- ncol(X)
-    if (is.null(mA) && is.null(m0)) {
-        if(length(d$lambda) != 1 || d$k != 1) 
-            stop("multiple random effects in model - 
+  nsim = 10000, log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
+  parallel = c("no", "multicore", "snow"), 
+  ncpus = 1L, cl = NULL) {
+  if (class(m) == "spm") {
+    m <- m$fit
+    class(m) <- "lme"
+  }
+  if (class(m) %in% c("amer", "mer")) 
+    stop("Package <amer> and versions of <lme4> below lme4_1.0 are no longer supported.")
+  if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest")) 
+    stop("Invalid m specified. \n")
+  if ("REML" != switch(c.m, 
+    lme = m$method, 
+    lmerMod = ifelse(isREML(m), "REML", "ML"))){
+    message("Using restricted likelihood evaluated at ML estimators.")
+    message("Refit with method=\"REML\" for exact results.")	
+  }
+  
+  d <- switch(c.m, lme = extract.lmeDesign(m), 
+    lmerMod = extract.lmerModDesign(m))
+  X <- d$X
+  qrX <- qr(X)
+  Z <- d$Z
+  y <- d$y
+  Vr <- d$Vr
+  if(all(Vr == 0)){
+    # this only happens if the estimate of the tested variance component is 0. 
+    # since we still want chol(cov2cor(Vr)) to work, this does the trick.
+    diag(Vr) <- 1
+  }
+  K <- ncol(Z)
+  n <- nrow(X)
+  p <- ncol(X)
+  if (is.null(mA) && is.null(m0)) {
+    if(length(d$lambda) != 1 || d$k != 1) 
+      stop("multiple random effects in model - 
                  exactRLRT needs 'm' with only a single random effect.")
-        #2*restricted ProfileLogLik under H0: lambda=0
-        res <- qr.resid(qrX, y)
-        R <- qr.R(qrX)
-        detXtX <- det(t(R) %*% R)
-        reml.H0 <- -((n - p) * log(2 * pi) + (n - p) * log(sum(res^2)) + 
-                         log(detXtX) + (n - p) - (n - p) * log(n - p))
-        #observed value of the test-statistic
-        reml.obs <- 2 * logLik(m, REML = TRUE)[1]
-        rlrt.obs <- max(0, reml.obs - reml.H0)
-        lambda <- d$lambda
-    } else {
-        nonidentfixmsg <- 
-            "Fixed effects structures of mA and m0 not identical.
+    #2*restricted ProfileLogLik under H0: lambda=0
+    res <- qr.resid(qrX, y)
+    R <- qr.R(qrX)
+    detXtX <- det(t(R) %*% R)
+    reml.H0 <- -((n - p) * log(2 * pi) + (n - p) * log(sum(res^2)) + 
+        log(detXtX) + (n - p) - (n - p) * log(n - p))
+    #observed value of the test-statistic
+    reml.obs <- 2 * logLik(m, REML = TRUE)[1]
+    rlrt.obs <- max(0, reml.obs - reml.H0)
+    lambda <- d$lambda
+  } else {
+    nonidentfixmsg <- 
+      "Fixed effects structures of mA and m0 not identical.
         REML-based inference not appropriate."
-        if (c.m == "lme") {
-            if (any(mA$fixDF$terms != m0$fixDF$terms)) 
-                stop(nonidentfixmsg)
-        } else {
-            if (c.m == "mer") {
-                if (any(mA@X != m0@X)) 
-                    stop(nonidentfixmsg)
-            } else {
-                if (c.m == "lmerMod") {
-                    if (any(getME(mA,"X") != getME(m0,"X")))
-                        stop(nonidentfixmsg)
-                }
-            }     
-        }
-        ## bug fix submitted by Andrzej Galecki 3/10/2009
-        DFx <- switch(c.m, lme = anova(mA,m0)$df, 
-                      lmerMod=anova(mA, m0, refit=FALSE)$Df) 
-        if (abs(diff(DFx)) > 1) {
-            stop("Random effects not independent - covariance(s) set to 0 under H0.\n
-                 exactRLRT can only test a single variance.\n")
-        }
-        rlrt.obs <- max(0, 2 * (logLik(mA, REML = TRUE)[1] - 
-                                    logLik(m0, REML = TRUE)[1]))
-    }
-    p <- if (rlrt.obs != 0) {
-        sample <- RLRTSim(X, Z, qrX=qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
-                          lambda0 = 0, seed = seed, nsim = nsim, 
-                          log.grid.hi = log.grid.hi, 
-                          log.grid.lo = log.grid.lo, gridlength = gridlength, 
-                          parallel = match.arg(parallel), 
-                          ncpus = ncpus, cl = cl)
-      if (quantile(sample, 0.9) == 0) {
-        warning("Null distribution has mass ", mean(sample == 
-            0), " at zero.\n")
-      }
-       mean(rlrt.obs < sample)
+    if (c.m == "lme") {
+      if (any(mA$fixDF$terms != m0$fixDF$terms)) 
+        stop(nonidentfixmsg)
     } else {
-      1
-    }  
-    RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 
-                 method = paste("simulated finite sample distribution of RLRT.\n
+      if (c.m == "mer") {
+        if (any(mA@X != m0@X)) 
+          stop(nonidentfixmsg)
+      } else {
+        if (c.m == "lmerMod") {
+          if (any(getME(mA,"X") != getME(m0,"X")))
+            stop(nonidentfixmsg)
+        }
+      }     
+    }
+    ## bug fix submitted by Andrzej Galecki 3/10/2009
+    DFx <- switch(c.m, lme = anova(mA,m0)$df, 
+      lmerMod=anova(mA, m0, refit=FALSE)$Df) 
+    if (abs(diff(DFx)) > 1) {
+      stop("Random effects not independent - covariance(s) set to 0 under H0.\n
+                 exactRLRT can only test a single variance.\n")
+    }
+    rlrt.obs <- max(0, 2 * (logLik(mA, REML = TRUE)[1] - 
+        logLik(m0, REML = TRUE)[1]))
+  }
+  p <- if (rlrt.obs != 0) {
+    sample <- RLRTSim(X, Z, qrX=qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
+      lambda0 = 0, seed = seed, nsim = nsim, 
+      log.grid.hi = log.grid.hi, 
+      log.grid.lo = log.grid.lo, gridlength = gridlength, 
+      parallel = match.arg(parallel), 
+      ncpus = ncpus, cl = cl)
+    if (quantile(sample, 0.9) == 0) {
+      warning("Null distribution has mass ", mean(sample == 
+          0), " at zero.\n")
+    }
+    mean(rlrt.obs < sample)
+  } else {
+    1
+  }  
+  RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 
+    method = paste("simulated finite sample distribution of RLRT.\n
                                 (p-value based on", 
-                                nsim, "simulated values)"), sample=sample)
-    class(RVAL) <- "htest"
-    return(RVAL)
+      nsim, "simulated values)"), sample=sample)
+  class(RVAL) <- "htest"
+  return(RVAL)
 } 
