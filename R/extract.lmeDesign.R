@@ -29,6 +29,7 @@
 #' str(design)
 #' 
 #' @export extract.lmeDesign
+#' @importFrom stats complete.cases formula model.frame model.matrix 
 extract.lmeDesign <- function(m)
 {
   start.level = 1

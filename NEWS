@@ -1,6 +1,7 @@
 3.1
 -------
 *** removed bug in LRTSim that led to non-sensical results. 
+* now deals with testing in models where tested variance component is 0 for `m`, but not for `mA`. (Thanks, Christoph Huber-Huber!)
 
 3.0
 -------

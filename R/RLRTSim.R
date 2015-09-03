@@ -1,5 +1,6 @@
 #' @export RLRTSim
 #' @import Rcpp
+#' @importFrom stats rchisq
 RLRTSim <- function(X, Z, qrX=qr(X), sqrt.Sigma, lambda0 = NA, 
   seed = NA, nsim = 10000, use.approx = 0, log.grid.hi = 8, 
   log.grid.lo = -10, gridlength = 200,

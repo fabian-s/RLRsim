@@ -69,6 +69,7 @@
 #' exactLRT(m = mA, m0 = m0)
 #' 
 #' @export exactLRT
+#' @importFrom stats coefficients
 `exactLRT` <-
   function(m, m0, seed = NA, nsim = 10000, 
     log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
@@ -109,7 +110,7 @@
     if (q == 0) 
       message("No restrictions on fixed effects. REML-based inference preferable.")
     method <- switch(c.m, lme = m$method, 
-      lmerMod=ifelse(isREML(m), "REML", "ML"))
+      lmerMod=ifelse(lme4::isREML(m), "REML", "ML"))
     if (method != "ML") {
       message("Using likelihood evaluated at REML estimators.")
       message("Please refit model with method=\"ML\" for exact results.")

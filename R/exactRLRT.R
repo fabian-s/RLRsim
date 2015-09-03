@@ -91,6 +91,7 @@
 #' exactRLRT(m.l)
 #' 
 #' @export exactRLRT
+#' @importFrom stats anova cov2cor logLik quantile 
 'exactRLRT' <- function(m, mA = NULL, m0 = NULL, seed = NA, 
   nsim = 10000, log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
   parallel = c("no", "multicore", "snow"), 
@@ -105,7 +106,7 @@
     stop("Invalid m specified. \n")
   if ("REML" != switch(c.m, 
     lme = m$method, 
-    lmerMod = ifelse(isREML(m), "REML", "ML"))){
+    lmerMod = ifelse(lme4::isREML(m), "REML", "ML"))){
     message("Using restricted likelihood evaluated at ML estimators.")
     message("Refit with method=\"REML\" for exact results.")	
   }
@@ -152,7 +153,7 @@
           stop(nonidentfixmsg)
       } else {
         if (c.m == "lmerMod") {
-          if (any(getME(mA,"X") != getME(m0,"X")))
+          if (any(lme4::getME(mA,"X") != lme4::getME(m0,"X")))
             stop(nonidentfixmsg)
         }
       }     
