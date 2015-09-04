@@ -3,7 +3,7 @@ Type: Package
 Title: Exact (Restricted) Likelihood Ratio Tests for Mixed and Additive Models
 Version: 3.1-2
 Date: 2015-05-26
-Author: Fabian Scheipl, Ben Bolker
+Authors@R: c(person("Scheipl", "Fabian", role = c("aut","cre"), email = "fabian.scheipl@stat.uni-muenchen.de"), person("Bolker", "Ben", role = "aut"))
 Maintainer: Fabian Scheipl <fabian.scheipl@stat.uni-muenchen.de>
 Description: Rapid, simulation-based exact (restricted) likelihood ratio tests
     for testing the presence of variance components/nonparametric terms for

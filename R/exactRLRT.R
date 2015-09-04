@@ -75,7 +75,8 @@
 #' 
 #' library(lme4)
 #' data(sleepstudy)
-#' mA <- lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), sleepstudy)
+#' mA <- lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
+#'   data = sleepstudy)
 #' m0 <- update(mA, . ~ . - (0 + I(Days-4.5)|Subject))
 #' m.slope  <- update(mA, . ~ . - (1|Subject))
 #' #test for subject specific slopes:
@@ -84,10 +85,12 @@
 #' library(mgcv)
 #' data(trees)
 #' #test quadratic trend vs. smooth alternative
-#' m.q<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 3), data = trees, method = "REML")$lme
+#' m.q<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 3), data = trees, 
+#'   method = "REML")$lme
 #' exactRLRT(m.q)
 #' #test linear trend vs. smooth alternative
-#' m.l<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 2), data = trees, method = "REML")$lme
+#' m.l<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 2), data = trees, 
+#'   method = "REML")$lme
 #' exactRLRT(m.l)
 #' 
 #' @export exactRLRT
@@ -101,9 +104,9 @@
     class(m) <- "lme"
   }
   if (class(m) %in% c("amer", "mer")) 
-    stop("Package <amer> and versions of <lme4> below lme4_1.0 are no longer supported.")
+    stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
   if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest")) 
-    stop("Invalid m specified. \n")
+    stop("Invalid <m> specified. \n")
   if ("REML" != switch(c.m, 
     lme = m$method, 
     lmerMod = ifelse(lme4::isREML(m), "REML", "ML"))){
@@ -129,7 +132,7 @@
   if (is.null(mA) && is.null(m0)) {
     if(length(d$lambda) != 1 || d$k != 1) 
       stop("multiple random effects in model - 
-                 exactRLRT needs 'm' with only a single random effect.")
+                 exactRLRT needs <m> with only a single random effect.")
     #2*restricted ProfileLogLik under H0: lambda=0
     res <- qr.resid(qrX, y)
     R <- qr.R(qrX)
@@ -142,7 +145,7 @@
     lambda <- d$lambda
   } else {
     nonidentfixmsg <- 
-      "Fixed effects structures of mA and m0 not identical.
+      "Fixed effects structures of <mA> and <m0> not identical.
         REML-based inference not appropriate."
     if (c.m == "lme") {
       if (any(mA$fixDF$terms != m0$fixDF$terms)) 
@@ -160,7 +163,7 @@
     }
     ## bug fix submitted by Andrzej Galecki 3/10/2009
     DFx <- switch(c.m, lme = anova(mA,m0)$df, 
-      lmerMod=anova(mA, m0, refit=FALSE)$Df) 
+      lmerMod = anova(mA, m0, refit = FALSE)$Df) 
     if (abs(diff(DFx)) > 1) {
       stop("Random effects not independent - covariance(s) set to 0 under H0.\n
                  exactRLRT can only test a single variance.\n")

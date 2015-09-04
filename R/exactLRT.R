@@ -62,7 +62,7 @@
 #' 
 #' ##test for Sex:Age interaction and Subject-Intercept
 #' mA<-lme(distance ~ Sex * I(age - 11), random = ~ 1| Subject,
-#'     data = Orthodont, method = "ML")
+#'   data = Orthodont, method = "ML")
 #' m0<-lm(distance ~ Sex + I(age - 11), data = Orthodont)
 #' summary(mA)
 #' summary(m0)
@@ -83,16 +83,16 @@
       class(m) <- "lme"
     }
     if (class(m) %in% c("amer", "mer"))
-      stop("Package <amer> and versions of <lme4> below lme4_1.0 are no longer supported.")
+      stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
     if (!((c.m <- class(m)) %in% c("lme", "lmerMod", "merModLmerTest"))) 
-      stop("Invalid m specified. \n")
+      stop("Invalid <m> specified. \n")
     
     
     d <- switch(c.m, lme = extract.lmeDesign(m), 
       lmerMod=extract.lmerModDesign(m))
     if(length(d$lambda) != 1 || d$k != 1) 
       stop("multiple random effects in model - 
-                 exactLRT needs 'm' with only a single random effect.")
+                 exactLRT needs <m> with only a single random effect.")
     X <- d$X
     Z <- d$Z
     y <- d$y
@@ -106,7 +106,7 @@
     if (q < 0) 
       stop("m0 not nested in m. \n")
     if (n - p - K < 1) 
-      stop("No. of effects greater than n. Reduce model complexity.\n")
+      stop("No. of effects greater than no. of observations. Reduce model complexity.\n")
     if (q == 0) 
       message("No restrictions on fixed effects. REML-based inference preferable.")
     method <- switch(c.m, lme = m$method, 
