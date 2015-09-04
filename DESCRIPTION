@@ -20,5 +20,5 @@ Imports:
 LinkingTo: Rcpp
 Suggests:
     nlme,
-    lme4 (>= 1.0)
+    lme4 (>= 1.1)
 Enhances: SemiPar
