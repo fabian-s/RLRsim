@@ -18,8 +18,4 @@ importFrom(stats,model.response)
 importFrom(stats,quantile)
 importFrom(stats,rchisq)
 useDynLib(RLRsim)
-if(getRversion() >= "3.3.0") {
-  importFrom("stats", sigma)
-} else {
-  importFrom("lme4", sigma)
-}
+if(getRversion() >= "3.3.0") importFrom("stats", sigma)

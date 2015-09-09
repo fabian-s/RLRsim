@@ -6,7 +6,7 @@ extract.lmerModDesign <- function(m) {
   resvar <- if(getRversion() >= "3.3.0") {
     # starting with R-3.3.0, stats defines a sigma generic which we import and
     # lme4 no longer exports its sigma-method
-    lme4:::sigma.merMod(m)^2
+    sigma(m)^2
   } else {
     lme4::sigma(m)^2
   } 
