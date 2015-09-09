@@ -82,7 +82,7 @@ LRTSim <- function(X,Z,q, sqrt.Sigma, seed=NA, nsim=10000,
   log.grid.hi=8, log.grid.lo=-10, gridlength=200,
   parallel = c("no", "multicore", "snow"),
   ncpus = 1L, cl = NULL){
-
+  
   parallel <- match.arg(parallel)
   have_mc <- have_snow <- FALSE
   if (parallel != "no" && ncpus > 1L) {
@@ -93,24 +93,24 @@ LRTSim <- function(X,Z,q, sqrt.Sigma, seed=NA, nsim=10000,
     if (!have_mc && !have_snow)
       ncpus <- 1L
   }
-
+  
   K <- NCOL(Z)     # no. of random effects
   n <- NROW(X)     # no. of obs
   p <- NCOL(X)     # no of fixed effects
-
+  
   #compute eigenvalues
   mu <- (svd(sqrt.Sigma %*% t(qr.resid(qr(X), Z)), nu = 0, nv = 0)$d)^2
   xi <- (svd(sqrt.Sigma %*% t(Z), nu = 0, nv = 0)$d)^2
-
+  
   #norm eigenvalues
   mu <- mu / max(mu,xi)
   xi <- xi / max(mu,xi)
-
+  
   lambda.grid <-c(0, exp(seq(log.grid.lo, log.grid.hi, length = gridlength - 1)))
-
+  
   if (!is.na(seed))
     set.seed(seed)
-
+  
   res <- if (ncpus > 1L && (have_mc || have_snow)) {
     nsim. <- as.integer(ceiling(nsim/ncpus))
     if (have_mc) {

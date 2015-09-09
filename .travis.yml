@@ -1,32 +1,30 @@
-# copied from https://github.com/hadley/dplyr/blob/master/.travis.yml @ 2014/08/12
+# copied from https://github.com/metacran/r-builder/blob/master/sample.travis.yml 
+# @ 2015/09/08
+
 language: c
+sudo: required
 
 before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-install:
-  - mkdir ~/.R
-  - ./travis-tool.sh r_binary_install lme4
-  - ./travis-tool.sh r_binary_install mgcv
-  - ./travis-tool.sh r_binary_install nlme
-  - ./travis-tool.sh r_binary_install Rcpp
-  - ./travis-tool.sh install_deps
+  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
+  - chmod 755 pkg-build.sh
+  - ./pkg-build.sh bootstrap
 
-before_script:
-# Install package
-#- R CMD INSTALL .
-script: ./travis-tool.sh run_tests
+install:
+  - ./pkg-build.sh install_deps
+
+script:
+  - ./pkg-build.sh run_tests
 
 after_failure:
-  - ./travis-tool.sh dump_logs
+  - ./pkg-build.sh dump_logs
 
-branches:
-  except:
-  - /-expt$/
-  - solaris
 notifications:
   email:
     on_success: change
     on_failure: change
 
+env:
+  matrix:
+    - RVERSION=oldrel
+    - RVERSION=release
+    - RVERSION=devel
