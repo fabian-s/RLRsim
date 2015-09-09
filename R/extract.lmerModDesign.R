@@ -3,7 +3,7 @@ extract.lmerModDesign <- function(m) {
   X <- lme4::getME(m,"X")
   Z <- as.matrix(lme4::getME(m,"Z"))
   v <- lme4::VarCorr(m)
-  resvar <- lme4::sigma(m)^2
+  resvar <- lme4:::sigma(m)^2
   Sigma.l <- lapply(v,function(x) x/resvar) #Cov(b)/ Var(Error)
   k <- lme4::getME(m,"n_rtrms") #how many grouping factors
   q <- lapply(Sigma.l,NROW) #how many variance components in each grouping factor
