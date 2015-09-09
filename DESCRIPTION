@@ -16,10 +16,10 @@ Depends:
     R (>= 2.14.0)
 Imports:
     Rcpp (>= 0.11.1),
-LinkingTo: 
-    Rcpp
-Suggests:
     lme4 (>= 1.1),
     mgcv,
     nlme
-Enhances: SemiPar
+LinkingTo: 
+    Rcpp
+Enhances: 
+    SemiPar

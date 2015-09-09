@@ -3,7 +3,13 @@ extract.lmerModDesign <- function(m) {
   X <- lme4::getME(m,"X")
   Z <- as.matrix(lme4::getME(m,"Z"))
   v <- lme4::VarCorr(m)
-  resvar <- lme4:::sigma(m)^2
+  resvar <- if(getRversion() >= "3.3.0") {
+    # starting with R-3.3.0, stats defines a sigma generic which we import and
+    # lme4 no longer exports its sigma-method
+    lme4:::sigma.merMod(m)^2
+  } else {
+    lme4::sigma(m)^2
+  } 
   Sigma.l <- lapply(v,function(x) x/resvar) #Cov(b)/ Var(Error)
   k <- lme4::getME(m,"n_rtrms") #how many grouping factors
   q <- lapply(Sigma.l,NROW) #how many variance components in each grouping factor
