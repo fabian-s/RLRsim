@@ -6,6 +6,10 @@ export(exactLRT)
 export(exactRLRT)
 export(extract.lmeDesign)
 import(Rcpp)
+importFrom(lme4,VarCorr)
+importFrom(lme4,getME)
+importFrom(mgcv,tensor.prod.model.matrix)
+importFrom(nlme,getGroups)
 importFrom(stats,anova)
 importFrom(stats,coefficients)
 importFrom(stats,complete.cases)
@@ -18,4 +22,9 @@ importFrom(stats,model.response)
 importFrom(stats,quantile)
 importFrom(stats,rchisq)
 useDynLib(RLRsim)
-if(getRversion() >= "3.3.0") importFrom("stats", sigma) 
+if(getRversion() >= "3.3.0") {
+    importFrom("stats", sigma)
+} else {
+    importFrom("lme4", sigma)
+}
+  

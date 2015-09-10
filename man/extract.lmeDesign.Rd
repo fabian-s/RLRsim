@@ -8,10 +8,10 @@
 extract.lmeDesign(m)
 }
 \arguments{
-\item{m}{fitted \code{lme}- or \code{mer}-Object}
+\item{m}{a fitted \code{lme}- or \code{merMod}-Object}
 }
 \value{
-a list with components
+a a list with components
 \itemize{
 \item \code{Vr} estimated covariance of the random effects divided by the
 estimated variance of the residuals

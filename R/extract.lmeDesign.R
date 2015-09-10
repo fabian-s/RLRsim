@@ -6,8 +6,8 @@
 #' 
 #' 
 #' @aliases extract.lmerModDesign extract.lmeDesign
-#' @param m fitted \code{lme}- or \code{mer}-Object
-#' @return a list with components
+#' @param m a fitted \code{lme}- or \code{merMod}-Object
+#' @return a a list with components
 #' \itemize{
 #' \item \code{Vr} estimated covariance of the random effects divided by the
 #' estimated variance of the residuals
@@ -30,6 +30,8 @@
 #' 
 #' @export extract.lmeDesign
 #' @importFrom stats complete.cases formula model.frame model.matrix 
+#' @importFrom nlme getGroups 
+#' @importFrom mgcv tensor.prod.model.matrix
 extract.lmeDesign <- function(m)
 {
   start.level = 1
@@ -38,7 +40,7 @@ extract.lmeDesign <- function(m)
     warning("Removing incomplete cases from supplied data.") 
     m$data[complete.cases(m$data),]
   } else m$data
-  grps <- nlme::getGroups(m)
+  grps <- getGroups(m)
   n <- length(grps)
   X <- list()
   grp.dims <- m$dims$ncol
@@ -60,7 +62,7 @@ extract.lmeDesign <- function(m)
       X[[2]] <- as.matrix(Zt[, i.col:(i.col + grp.dims[i] -
           1)])
       i.col <- i.col + grp.dims[i]
-      Z <- cbind(mgcv::tensor.prod.model.matrix(X),Z)
+      Z <- cbind(tensor.prod.model.matrix(X), Z)
     }
     Vr <- matrix(0, ncol(Z), ncol(Z))
     start <- 1

@@ -1,17 +1,12 @@
 #' @importFrom stats model.response
+#' @importFrom lme4 getME VarCorr
 extract.lmerModDesign <- function(m) {
-  X <- lme4::getME(m,"X")
-  Z <- as.matrix(lme4::getME(m,"Z"))
-  v <- lme4::VarCorr(m)
-  resvar <- if(getRversion() >= "3.3.0") {
-    # starting with R-3.3.0, stats defines a sigma generic which we import and
-    # lme4 no longer exports its sigma-method
-    sigma(m)^2
-  } else {
-    lme4::sigma(m)^2
-  } 
+  X <- getME(m,"X")
+  Z <- as.matrix(getME(m,"Z"))
+  v <- VarCorr(m)
+  resvar <- sigma(m)^2
   Sigma.l <- lapply(v,function(x) x/resvar) #Cov(b)/ Var(Error)
-  k <- lme4::getME(m,"n_rtrms") #how many grouping factors
+  k <- getME(m,"n_rtrms") #how many grouping factors
   q <- lapply(Sigma.l,NROW) #how many variance components in each grouping factor
   ## OR lapply(m@cnms,length) -- but we should have an extractor for this
   nlevel<-sapply(m@flist, function(x) length(levels(x))) #how many inner blocks in Sigma_i
