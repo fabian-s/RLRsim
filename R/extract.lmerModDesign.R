@@ -1,5 +1,11 @@
 #' @importFrom stats model.response
 #' @importFrom lme4 getME VarCorr
+#' @rawNamespace 
+#' if(getRversion() >= "3.3.0") {
+#'   importFrom("stats", sigma)
+#' } else {
+#'   importFrom("lme4", sigma)
+#' }
 extract.lmerModDesign <- function(m) {
   X <- getME(m,"X")
   Z <- as.matrix(getME(m,"Z"))

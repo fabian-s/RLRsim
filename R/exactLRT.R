@@ -86,7 +86,7 @@
       stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
     if (!((c.m <- class(m)) %in% c("lme", "lmerMod", "merModLmerTest"))) 
       stop("Invalid <m> specified. \n")
-    
+    if(c.m == "merModLmerTest") c.m <- "lmerMod"
     
     d <- switch(c.m, lme = extract.lmeDesign(m), 
       lmerMod=extract.lmerModDesign(m))
