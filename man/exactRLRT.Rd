@@ -80,9 +80,8 @@ likelihood ratio test statistic as derived by Crainiceanu & Ruppert (2004).
 }
 \examples{
 
-library(lme4)
-data(sleepstudy)
-mA <- lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
+data(sleepstudy, package = "lme4")
+mA <- lme4::lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
   data = sleepstudy)
 m0 <- update(mA, . ~ . - (0 + I(Days-4.5)|Subject))
 m.slope  <- update(mA, . ~ . - (1|Subject))
