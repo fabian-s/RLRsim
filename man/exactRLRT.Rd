@@ -101,10 +101,6 @@ m.l<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 2), data = trees,
 exactRLRT(m.l)
 
 }
-\author{
-Fabian Scheipl, bug fixes by Andrzej Galecki, updates for
-\pkg{lme4}-compatibility by Ben Bolker
-}
 \references{
 Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
 linear mixed models with one variance component, \emph{Journal of the Royal
@@ -124,5 +120,8 @@ linear mixed models.  \emph{Computational Statistics & Data Analysis},
 \code{\link{RLRTSim}} for the underlying simulation algorithm;
 \code{\link{exactLRT}} for likelihood based tests
 }
+\author{
+Fabian Scheipl, bug fixes by Andrzej Galecki, updates for
+\pkg{lme4}-compatibility by Ben Bolker
+}
 \keyword{htest}
-

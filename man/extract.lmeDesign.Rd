@@ -41,4 +41,3 @@ Fabian Scheipl, \code{extract.lmerModDesign} by Ben Bolker.
 Many thanks to Andrzej Galecki and Tomasz Burzykowski for bug fixes.
 }
 \keyword{utilities}
-

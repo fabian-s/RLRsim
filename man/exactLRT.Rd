@@ -5,8 +5,8 @@
 \title{Likelihood Ratio Tests for simple linear mixed models}
 \usage{
 exactLRT(m, m0, seed = NA, nsim = 10000, log.grid.hi = 8,
-  log.grid.lo = -10, gridlength = 200, parallel = c("no", "multicore",
-  "snow"), ncpus = 1L, cl = NULL)
+  log.grid.lo = -10, gridlength = 200, parallel = c("no",
+  "multicore", "snow"), ncpus = 1L, cl = NULL)
 }
 \arguments{
 \item{m}{The fitted model under the alternative; of class \code{lme},
@@ -84,9 +84,6 @@ summary(m0)
 exactLRT(m = mA, m0 = m0)
 
 }
-\author{
-Fabian Scheipl, updates for \pkg{lme4.0}-compatibility by Ben Bolker
-}
 \references{
 Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
 linear mixed models with one variance component, \emph{Journal of the Royal
@@ -97,5 +94,7 @@ Statistical Society: Series B},\bold{66},165--185.
 \code{\link{RLRTSim}} and \code{\link{exactRLRT}} for restricted likelihood
 based tests
 }
+\author{
+Fabian Scheipl, updates for \pkg{lme4.0}-compatibility by Ben Bolker
+}
 \keyword{htest}
-

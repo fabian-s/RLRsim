@@ -6,8 +6,8 @@
 \title{Simulation of the (Restricted) Likelihood Ratio Statistic}
 \usage{
 LRTSim(X, Z, q, sqrt.Sigma, seed = NA, nsim = 10000, log.grid.hi = 8,
-  log.grid.lo = -10, gridlength = 200, parallel = c("no", "multicore",
-  "snow"), ncpus = 1L, cl = NULL)
+  log.grid.lo = -10, gridlength = 200, parallel = c("no",
+  "multicore", "snow"), ncpus = 1L, cl = NULL)
 }
 \arguments{
 \item{X}{The fixed effects design matrix of the model under the alternative}
@@ -87,9 +87,6 @@ sim.LRT <- LRTSim(X, Z, 1, diag(10))
 (pval <- mean(sim.LRT > obs.LRT))
 
 }
-\author{
-Fabian Scheipl; parallelization code adapted from \code{boot} package
-}
 \references{
 Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
   linear mixed models with one variance component, \emph{Journal of the Royal
@@ -107,6 +104,8 @@ Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
 \seealso{
 \code{\link{exactLRT}}, \code{\link{exactRLRT}} for tests
 }
+\author{
+Fabian Scheipl; parallelization code adapted from \code{boot} package
+}
 \keyword{datagen}
 \keyword{distribution}
-

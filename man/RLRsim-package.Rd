@@ -2,8 +2,8 @@
 % Please edit documentation in R/RLRsim-package.R
 \docType{package}
 \name{RLRsim-package}
-\alias{RLRsim}
 \alias{RLRsim-package}
+\alias{RLRsim}
 \title{R package for fast and exact (restricted) likelihood ratio tests for mixed and additive models.}
 \description{
 \code{RLRsim} implements fast simulation-based exact tests for variance components in mixed and additive models for 
@@ -36,4 +36,3 @@ Fabian Scheipl (\email{fabian.scheipl@stat.uni-muenchen.de}),
   Ben Bolker
 }
 \keyword{package}
-
