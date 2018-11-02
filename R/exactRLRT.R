@@ -105,9 +105,10 @@
   }
   if (class(m) %in% c("amer", "mer")) 
     stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
-  if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest")) 
+  if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest")) 
     stop("Invalid <m> specified. \n")
-  if(c.m == "merModLmerTest") c.m <- "lmerMod"
+  if (c.m %in% c("merModLmerTest", "lmerModLmerTest")) 
+    c.m <- "lmerMod"
   if ("REML" != switch(c.m, 
     lme = m$method, 
     lmerMod = ifelse(lme4::isREML(m), "REML", "ML"))){
@@ -122,7 +123,7 @@
   Z <- d$Z
   y <- d$y
   Vr <- d$Vr
-  if(all(Vr == 0)){
+  if (all(Vr == 0)) {
     # this only happens if the estimate of the tested variance component is 0. 
     # since we still want chol(cov2cor(Vr)) to work, this does the trick.
     diag(Vr) <- 1
@@ -131,7 +132,7 @@
   n <- nrow(X)
   p <- ncol(X)
   if (is.null(mA) && is.null(m0)) {
-    if(length(d$lambda) != 1 || d$k != 1) 
+    if (length(d$lambda) != 1 || d$k != 1) 
       stop("multiple random effects in model - 
                  exactRLRT needs <m> with only a single random effect.")
     #2*restricted ProfileLogLik under H0: lambda=0

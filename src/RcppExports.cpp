@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // RLRsimCpp
 List RLRsimCpp(int p, int k, int n, int nsim, int g, int q, Rcpp::NumericVector mu, Rcpp::NumericVector lambda, double lambda0, Rcpp::NumericVector xi, bool REML);
-RcppExport SEXP RLRsim_RLRsimCpp(SEXP pSEXP, SEXP kSEXP, SEXP nSEXP, SEXP nsimSEXP, SEXP gSEXP, SEXP qSEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP lambda0SEXP, SEXP xiSEXP, SEXP REMLSEXP) {
+RcppExport SEXP _RLRsim_RLRsimCpp(SEXP pSEXP, SEXP kSEXP, SEXP nSEXP, SEXP nsimSEXP, SEXP gSEXP, SEXP qSEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP lambda0SEXP, SEXP xiSEXP, SEXP REMLSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,4 +25,14 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(RLRsimCpp(p, k, n, nsim, g, q, mu, lambda, lambda0, xi, REML));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_RLRsim_RLRsimCpp", (DL_FUNC) &_RLRsim_RLRsimCpp, 11},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_RLRsim(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

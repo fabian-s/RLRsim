@@ -2,7 +2,7 @@
 -------
 *** removed bug in LRTSim that led to non-sensical results. 
 * now deals with testing in models where tested variance component is 0 for `m`, but not for `mA`. (Thanks, Christoph Huber-Huber!)
-* now deals correctly with models returned from lmerTest::lmer (Thanks, Lukas Meier)
+* now deals correctly with models returned from lmerTest::lmer (Thanks, twice, Lukas Meier)
 
 3.0
 -------
