@@ -20,6 +20,10 @@
 #' very small. We use the finite sample distribution of the restricted
 #' likelihood ratio test statistic as derived by Crainiceanu & Ruppert (2004).
 #' 
+#' No simulation is performed if the observed test statistic is 0. (i.e., if the
+#' fit of the model fitted under the alternative is indistinguishable from the
+#' model fit under H0), since the  p-value is always 1 in this case.
+#' 
 #' @param m The fitted model under the alternative or, for testing in models
 #' with multiple variance components, the reduced model containing only the
 #' random effect to be tested (see Details), an \code{lme}, \code{lmerMod} or
@@ -173,7 +177,7 @@
         logLik(m0, REML = TRUE)[1]))
   }
   p <- if (rlrt.obs != 0) {
-    sample <- RLRTSim(X, Z, qrX=qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
+    sample <- RLRTSim(X, Z, qrX = qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
       lambda0 = 0, seed = seed, nsim = nsim, 
       log.grid.hi = log.grid.hi, 
       log.grid.lo = log.grid.lo, gridlength = gridlength, 
@@ -185,12 +189,15 @@
     }
     mean(rlrt.obs < sample)
   } else {
+    message("Observed RLRT statistic is 0, no simulation performed.")
+    nsim <- 0
+    sample <- NULL
     1
   }  
   RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 
     method = paste("simulated finite sample distribution of RLRT.\n
                                 (p-value based on", 
-      nsim, "simulated values)"), sample=sample)
+      nsim, "simulated values)"), sample = sample)
   class(RVAL) <- "htest"
   return(RVAL)
 } 

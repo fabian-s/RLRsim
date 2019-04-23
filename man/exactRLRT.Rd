@@ -77,6 +77,10 @@ number of parameters (fixed and random) is smaller than the number of
 observations and the nuisance variance components are not superfluous or
 very small. We use the finite sample distribution of the restricted
 likelihood ratio test statistic as derived by Crainiceanu & Ruppert (2004).
+
+No simulation is performed if the observed test statistic is 0. (i.e., if the
+fit of the model fitted under the alternative is indistinguishable from the
+model fit under H0), since the  p-value is always 1 in this case.
 }
 \examples{
 
