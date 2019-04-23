@@ -54,7 +54,7 @@
 #'
 #'   Scheipl, F. (2007) Testing for nonparametric terms and random effects in
 #'   structured additive regression.  Diploma thesis.\
-#'   \url{http://www.statistik.lmu.de/~scheipl/downloads/DIPLOM.zip}.
+#'   \url{http://scheipl.userweb.mwn.de/downloads/DIPLOM.zip}.
 #'
 #'   Scheipl, F., Greven, S. and Kuechenhoff, H (2008) Size and power of tests
 #'   for a zero random effect variance or polynomial regression in additive and
