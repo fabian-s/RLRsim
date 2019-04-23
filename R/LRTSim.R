@@ -53,7 +53,7 @@
 #'   Statistical Society: Series B},\bold{66},165--185.
 #'
 #'   Scheipl, F. (2007) Testing for nonparametric terms and random effects in
-#'   structured additive regression.  Diploma thesis.\
+#'   structured additive regression.  Diploma thesis (unpublished).\
 #'   \url{http://scheipl.userweb.mwn.de/downloads/DIPLOM.zip}.
 #'
 #'   Scheipl, F., Greven, S. and Kuechenhoff, H (2008) Size and power of tests
