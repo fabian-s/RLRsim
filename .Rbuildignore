@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.md
+check_and_release.R
 .travis.yml
 ^cran-comments\.md$
 revdep

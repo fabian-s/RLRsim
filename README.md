@@ -3,7 +3,7 @@ RLRsim
   
 <!-- badges: start -->
   [![Travis build status](https://travis-ci.org/fabian-s/RLRsim.svg?branch=master)](https://travis-ci.org/fabian-s/RLRsim)
-  <!-- badges: end -->
+<!-- badges: end -->
 
 R package for fast &amp; exact (restricted) likelihood ratio tests for mixed and additive models.
 
