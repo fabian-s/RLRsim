@@ -166,9 +166,10 @@
         }
       }     
     }
+    lmer_nm <- if (packageVersion("lme4")<="1.1.21") "Df" else "npar"
     ## bug fix submitted by Andrzej Galecki 3/10/2009
     DFx <- switch(c.m, lme = anova(mA,m0)$df, 
-      lmerMod = anova(mA, m0, refit = FALSE)$Df) 
+                  lmerMod = anova(mA, m0, refit = FALSE)[[lmer_nm]]) 
     if (abs(diff(DFx)) > 1) {
       stop("Random effects not independent - covariance(s) set to 0 under H0.\n
                  exactRLRT can only test a single variance.\n")
