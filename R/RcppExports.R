@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 RLRsimCpp <- function(p, k, n, nsim, g, q, mu, lambda, lambda0, xi, REML) {
-    .Call('_RLRsim_RLRsimCpp', PACKAGE = 'RLRsim', p, k, n, nsim, g, q, mu, lambda, lambda0, xi, REML)
+    .Call(`_RLRsim_RLRsimCpp`, p, k, n, nsim, g, q, mu, lambda, lambda0, xi, REML)
 }
 

@@ -26,13 +26,3 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-
-static const R_CallMethodDef CallEntries[] = {
-    {"_RLRsim_RLRsimCpp", (DL_FUNC) &_RLRsim_RLRsimCpp, 11},
-    {NULL, NULL, 0}
-};
-
-RcppExport void R_init_RLRsim(DllInfo *dll) {
-    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
-}
