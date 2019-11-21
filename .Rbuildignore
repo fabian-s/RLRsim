@@ -6,3 +6,4 @@ check_and_release.R
 ^cran-comments\.md$
 revdep
 ^\.travis\.yml$
+^CRAN-RELEASE$
