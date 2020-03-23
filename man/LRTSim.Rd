@@ -5,9 +5,20 @@
 \alias{RLRTSim}
 \title{Simulation of the (Restricted) Likelihood Ratio Statistic}
 \usage{
-LRTSim(X, Z, q, sqrt.Sigma, seed = NA, nsim = 10000, log.grid.hi = 8,
-  log.grid.lo = -10, gridlength = 200, parallel = c("no",
-  "multicore", "snow"), ncpus = 1L, cl = NULL)
+LRTSim(
+  X,
+  Z,
+  q,
+  sqrt.Sigma,
+  seed = NA,
+  nsim = 10000,
+  log.grid.hi = 8,
+  log.grid.lo = -10,
+  gridlength = 200,
+  parallel = c("no", "multicore", "snow"),
+  ncpus = 1L,
+  cl = NULL
+)
 }
 \arguments{
 \item{X}{The fixed effects design matrix of the model under the alternative}
@@ -93,8 +104,7 @@ Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
   Statistical Society: Series B},\bold{66},165--185.
 
   Scheipl, F. (2007) Testing for nonparametric terms and random effects in
-  structured additive regression.  Diploma thesis (unpublished).\
-  \url{http://scheipl.userweb.mwn.de/downloads/DIPLOM.zip}.
+  structured additive regression.  Diploma thesis (unpublished).
 
   Scheipl, F., Greven, S. and Kuechenhoff, H (2008) Size and power of tests
   for a zero random effect variance or polynomial regression in additive and

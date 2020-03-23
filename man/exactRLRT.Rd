@@ -4,9 +4,19 @@
 \alias{exactRLRT}
 \title{Restricted Likelihood Ratio Tests for additive and linear mixed models}
 \usage{
-exactRLRT(m, mA = NULL, m0 = NULL, seed = NA, nsim = 10000,
-  log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
-  parallel = c("no", "multicore", "snow"), ncpus = 1L, cl = NULL)
+exactRLRT(
+  m,
+  mA = NULL,
+  m0 = NULL,
+  seed = NA,
+  nsim = 10000,
+  log.grid.hi = 8,
+  log.grid.lo = -10,
+  gridlength = 200,
+  parallel = c("no", "multicore", "snow"),
+  ncpus = 1L,
+  cl = NULL
+)
 }
 \arguments{
 \item{m}{The fitted model under the alternative or, for testing in models

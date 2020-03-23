@@ -4,9 +4,18 @@
 \alias{exactLRT}
 \title{Likelihood Ratio Tests for simple linear mixed models}
 \usage{
-exactLRT(m, m0, seed = NA, nsim = 10000, log.grid.hi = 8,
-  log.grid.lo = -10, gridlength = 200, parallel = c("no",
-  "multicore", "snow"), ncpus = 1L, cl = NULL)
+exactLRT(
+  m,
+  m0,
+  seed = NA,
+  nsim = 10000,
+  log.grid.hi = 8,
+  log.grid.lo = -10,
+  gridlength = 200,
+  parallel = c("no", "multicore", "snow"),
+  ncpus = 1L,
+  cl = NULL
+)
 }
 \arguments{
 \item{m}{The fitted model under the alternative; of class \code{lme},
