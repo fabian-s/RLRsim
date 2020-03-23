@@ -167,7 +167,7 @@
         }
       }     
     }
-    lmer_nm <- if (packageVersion("lme4") <= "1.1.21") "Df" else "npar"
+    lmer_nm <- if (utils::packageVersion("lme4")<="1.1.21") "Df" else "npar"
     ## bug fix submitted by Andrzej Galecki 3/10/2009
     DFx <- switch(c.m, lme = anova(mA,m0)$df, 
                   lmerMod = anova(mA, m0, refit = FALSE)[[lmer_nm]]) 
