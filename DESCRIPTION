@@ -2,9 +2,9 @@ Package: RLRsim
 Type: Package
 Title: Exact (Restricted) Likelihood Ratio Tests for Mixed and Additive Models
 Version: 3.1-6
-Date: 2019-11-19
 Authors@R: c(person("Fabian", "Scheipl", role = c("aut", "cre"),
-	   email = "fabian.scheipl@stat.uni-muenchen.de"),
+	   email = "fabian.scheipl@stat.uni-muenchen.de",
+	   comment=c(ORCID="0000-0001-8172-3603")),
 	   person("Ben", "Bolker", role = "ctb",
 	   comment=c(ORCID="0000-0002-2127-0443")))
 Maintainer: Fabian Scheipl <fabian.scheipl@stat.uni-muenchen.de>
