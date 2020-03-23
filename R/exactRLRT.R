@@ -98,6 +98,7 @@
 #' 
 #' @export exactRLRT
 #' @importFrom stats anova cov2cor logLik quantile 
+#' @importFrom utils packageVersion
 'exactRLRT' <- function(m, mA = NULL, m0 = NULL, seed = NA, 
   nsim = 10000, log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
   parallel = c("no", "multicore", "snow"), 
@@ -166,7 +167,7 @@
         }
       }     
     }
-    lmer_nm <- if (packageVersion("lme4")<="1.1.21") "Df" else "npar"
+    lmer_nm <- if (packageVersion("lme4") <= "1.1.21") "Df" else "npar"
     ## bug fix submitted by Andrzej Galecki 3/10/2009
     DFx <- switch(c.m, lme = anova(mA,m0)$df, 
                   lmerMod = anova(mA, m0, refit = FALSE)[[lmer_nm]]) 
