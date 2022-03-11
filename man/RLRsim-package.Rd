@@ -21,15 +21,15 @@ to generate exact critical values for the corresponding
 (restricted) likelihood ratio tests.\cr\cr
 The theory behind these tests was first developed in:\cr
 Crainiceanu, C. and Ruppert, D. (2004) 
-\href{http://people.orie.cornell.edu/~davidr/papers/asymptoticpaper2.pdf}{Likelihood ratio tests in
+\href{https://people.orie.cornell.edu/~davidr/papers/asymptoticpaper2.pdf}{Likelihood ratio tests in
 linear mixed models with one variance component}, \emph{Journal of the Royal
 Statistical Society: Series B}, \bold{66}, 165--185.\cr\cr
 Power analyses and sensitivity studies for \pkg{RLRsim} can be found in:\cr
 Scheipl, F., Greven, S. and Kuechenhoff, H. (2008) 
-\href{http://dx.doi.org/10.1016/j.csda.2007.10.022}{Size and power of tests
+Size and power of tests
 for a zero random effect variance or polynomial regression in additive and
-linear mixed models}.  \emph{Computational Statistics and Data Analysis},
-\bold{52}(7), 3283--3299.
+linear mixed models.  \emph{Computational Statistics and Data Analysis},
+\bold{52}(7), 3283--3299, \doi{10.1016/j.csda.2007.10.022}.
 }
 \author{
 Fabian Scheipl (\email{fabian.scheipl@stat.uni-muenchen.de}), 
