@@ -25,4 +25,4 @@ Imports:
 LinkingTo: Rcpp
 Enhances: SemiPar,
     lmerTest
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
