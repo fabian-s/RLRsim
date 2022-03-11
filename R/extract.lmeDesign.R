@@ -51,12 +51,9 @@ extract.lmeDesign <- function(m)
   Z <- matrix(0, n, 0)
   if (start.level <= n.levels) {
     for (i in 1:(n.levels - start.level + 1)) {
-      if(length(levels(m$groups[[n.levels-i+1]]))!=1)
-      {
-        X[[1]] <- model.matrix(~m$groups[[n.levels - i +
-            1]] - 1, 
-          contrasts.arg = c("contr.treatment",
-            "contr.treatment"))
+      if(length(levels(m$groups[[n.levels-i+1]])) != 1) {
+        X[[1]] <- model.matrix(~m$groups[[n.levels - i +  1]] - 1, 
+          contrasts.arg = list(`~m$groups[[n.levels - i +  1]]` = "contr.treatment"))
       }
       else X[[1]]<-matrix(1, n, 1)
       X[[2]] <- as.matrix(Zt[, i.col:(i.col + grp.dims[i] -
@@ -78,9 +75,9 @@ extract.lmeDesign <- function(m)
   X <- if(class(m$call$fixed) == "name" &&  !is.null(m$data$X)){
     m$data$X
   } else 	{
-    model.matrix(formula(eval(m$call$fixed)),data)
+    model.matrix(formula(eval(m$call$fixed)), data)
   }
-  y<-as.vector(matrix(m$residuals, ncol=NCOL(m$residuals))[,NCOL(m$residuals)] + 
+  y <- as.vector(matrix(m$residuals, ncol=NCOL(m$residuals))[,NCOL(m$residuals)] + 
       matrix(m$fitted, ncol=NCOL(m$fitted))[,NCOL(m$fitted)])
   return(list(
     Vr=Vr, #Cov(RanEf)/Var(Error)
