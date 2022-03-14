@@ -15,6 +15,7 @@ Description: Rapid, simulation-based exact (restricted) likelihood ratio tests
 License: GPL
 URL: https://github.com/fabian-s/RLRsim
 BugReports: https://github.com/fabian-s/RLRsim/issues
+SystemRequirements: C++11
 Depends:
     R (>= 2.14.0)
 Imports:

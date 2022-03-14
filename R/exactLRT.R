@@ -76,7 +76,7 @@
     parallel = c("no", "multicore", "snow"), 
     ncpus = 1L, cl = NULL) 
   {
-    if (inherits(m0, "lm")) 
+    if (!inherits(m0, "lm")) 
       stop("m0 not an lm-object. \n")
     if (inherits(m, "spm")) {
       m <- m$fit
