@@ -76,21 +76,23 @@
     parallel = c("no", "multicore", "snow"), 
     ncpus = 1L, cl = NULL) 
   {
-    if (class(m0) != "lm") 
+    if (inherits(m0, "lm")) 
       stop("m0 not an lm-object. \n")
-    if (class(m) == "spm") {
+    if (inherits(m, "spm")) {
       m <- m$fit
       class(m) <- "lme"
     }
-    if (class(m) %in% c("amer", "mer"))
+    if (any(class(m) %in% c("amer", "mer")))
       stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
-    if (!((c.m <- class(m)) %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest"))) 
+    c.m <- class(m)
+    if (!any(c.m %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest"))) 
       stop("Invalid <m> specified. \n")
-    if (c.m %in% c("merModLmerTest", "lmerModLmerTest")) c.m <- "lmerMod"
-    
+    if (c.m %in% c("merModLmerTest", "lmerModLmerTest")) {
+      c.m <- "lmerMod"
+    }  
     d <- switch(c.m, lme = extract.lmeDesign(m), 
       lmerMod=extract.lmerModDesign(m))
-    if(length(d$lambda) != 1 || d$k != 1) 
+    if (length(d$lambda) != 1 || d$k != 1) 
       stop("multiple random effects in model - 
                  exactLRT needs <m> with only a single random effect.")
     X <- d$X

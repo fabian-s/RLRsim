@@ -103,15 +103,16 @@
   nsim = 10000, log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
   parallel = c("no", "multicore", "snow"), 
   ncpus = 1L, cl = NULL) {
-  if (class(m) == "spm") {
+  if (inherits(m, "spm")) {
     m <- m$fit
     class(m) <- "lme"
   }
-  if (class(m) %in% c("amer", "mer")) 
+  if (any(class(m) %in% c("amer", "mer")))
     stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
-  if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest")) 
+  c.m <- class(m)
+  if (!any(c.m %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest"))) 
     stop("Invalid <m> specified. \n")
-  if (c.m %in% c("merModLmerTest", "lmerModLmerTest")) 
+  if (any(c.m %in% c("merModLmerTest", "lmerModLmerTest"))) 
     c.m <- "lmerMod"
   if ("REML" != switch(c.m, 
     lme = m$method, 
