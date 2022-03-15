@@ -51,11 +51,13 @@ extract.lmeDesign <- function(m)
   Z <- matrix(0, n, 0)
   if (start.level <= n.levels) {
     for (i in 1:(n.levels - start.level + 1)) {
-      if(length(levels(m$groups[[n.levels-i+1]])) != 1) {
-        X[[1]] <- model.matrix(~m$groups[[n.levels - i +  1]] - 1, 
-          contrasts.arg = list(`~m$groups[[n.levels - i +  1]]` = "contr.treatment"))
-      }
-      else X[[1]]<-matrix(1, n, 1)
+      if (length(levels(m$groups[[n.levels - i + 1]])) != 1) {
+        grps <- m$groups[[n.levels - i +  1]]
+        X[[1]] <- model.matrix(~ grps - 1, 
+                               contrasts.arg = list(grps = "contr.treatment"))
+      } else {
+        X[[1]] <- matrix(1, n, 1)
+      }  
       X[[2]] <- as.matrix(Zt[, i.col:(i.col + grp.dims[i] -
           1)])
       i.col <- i.col + grp.dims[i]

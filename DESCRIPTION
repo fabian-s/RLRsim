@@ -1,7 +1,7 @@
 Package: RLRsim
 Type: Package
 Title: Exact (Restricted) Likelihood Ratio Tests for Mixed and Additive Models
-Version: 3.1-7
+Version: 3.1-8
 Authors@R: c(person("Fabian", "Scheipl", role = c("aut", "cre"),
 	   email = "fabian.scheipl@stat.uni-muenchen.de",
 	   comment=c(ORCID="0000-0001-8172-3603")),
