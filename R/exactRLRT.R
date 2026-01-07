@@ -1,10 +1,10 @@
 #' Restricted Likelihood Ratio Tests for additive and linear mixed models
-#' 
+#'
 #' This function provides an (exact) restricted likelihood ratio test based on
 #' simulated values from the finite sample distribution for testing whether the
 #' variance of a random effect is 0 in a linear mixed model with known
 #' correlation structure of the tested random effect and i.i.d. errors.
-#' 
+#'
 #' Testing in models with only a single variance component require only the
 #' first argument \code{m}. For testing in models with multiple variance
 #' components, the fitted model \code{m} must contain \bold{only} the random
@@ -19,11 +19,11 @@
 #' observations and the nuisance variance components are not superfluous or
 #' very small. We use the finite sample distribution of the restricted
 #' likelihood ratio test statistic as derived by Crainiceanu & Ruppert (2004).
-#' 
+#'
 #' No simulation is performed if the observed test statistic is 0. (i.e., if the
 #' fit of the model fitted under the alternative is indistinguishable from the
 #' model fit under H0), since the  p-value is always 1 in this case.
-#' 
+#'
 #' @param m The fitted model under the alternative or, for testing in models
 #' with multiple variance components, the reduced model containing only the
 #' random effect to be tested (see Details), an \code{lme}, \code{lmerMod} or
@@ -64,72 +64,138 @@
 #' @references Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
 #' linear mixed models with one variance component, \emph{Journal of the Royal
 #' Statistical Society: Series B},\bold{66},165--185.
-#' 
+#'
 #' Greven, S., Crainiceanu, C., Kuechenhoff, H., and Peters, A. (2008)
 #' Restricted Likelihood Ratio Testing for Zero Variance Components in Linear
 #' Mixed Models, \emph{Journal of Computational and Graphical Statistics},
 #' \bold{17} (4): 870--891.
-#' 
+#'
 #' Scheipl, F., Greven, S. and Kuechenhoff, H. (2008) Size and power of tests
 #' for a zero random effect variance or polynomial regression in additive and
 #' linear mixed models.  \emph{Computational Statistics & Data Analysis},
 #' \bold{52}(7):3283--3299.
 #' @keywords htest
 #' @examples
-#' 
+#'
 #' data(sleepstudy, package = "lme4")
-#' mA <- lme4::lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
+#' mA <- lme4::lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject),
 #'   data = sleepstudy)
 #' m0 <- update(mA, . ~ . - (0 + I(Days-4.5)|Subject))
 #' m.slope  <- update(mA, . ~ . - (1|Subject))
 #' #test for subject specific slopes:
 #' exactRLRT(m.slope, mA, m0)
-#' 
+#'
 #' library(mgcv)
 #' data(trees)
 #' #test quadratic trend vs. smooth alternative
-#' m.q<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 3), data = trees, 
+#' m.q<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 3), data = trees,
 #'   method = "REML")$lme
 #' exactRLRT(m.q)
 #' #test linear trend vs. smooth alternative
-#' m.l<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 2), data = trees, 
+#' m.l<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 2), data = trees,
 #'   method = "REML")$lme
 #' exactRLRT(m.l)
-#' 
+#'
+#' \dontrun{
+#' # lme4 2.0 syntax examples (requires lme4 >= 2.0):
+#'
+#' # Test random intercept with explicit unstructured syntax
+#' m_us <- lme4::lmer(Reaction ~ Days + us(1|Subject), data = sleepstudy)
+#' exactRLRT(m_us)
+#'
+#' # Test with compound symmetric covariance (homogeneous variance, single correlation)
+#' # cs(hom=TRUE) has ONE variance parameter - can test directly
+#' # Correlation is treated as nuisance via pseudo-likelihood
+#' m_cs <- lme4::lmer(Reaction ~ Days + cs(Days|Subject, hom=TRUE), data = sleepstudy)
+#' exactRLRT(m_cs)
+#'
+#' # Test with AR(1) covariance (requires ordered factor)
+#' # ar1() has ONE variance parameter - can test directly
+#' # AR correlation is treated as nuisance via pseudo-likelihood
+#' sleepstudy$DaysF <- ordered(sleepstudy$Days)
+#' m_ar1 <- lme4::lmer(Reaction ~ Days + ar1(0+DaysF|Subject), data = sleepstudy)
+#' exactRLRT(m_ar1)
+#'
+#' # Test with diagonal covariance (no correlation between intercept and slope)
+#' # Note: diag() with multiple terms has multiple variance components, need mA/m0 approach
+#' mA_diag <- lme4::lmer(Reaction ~ Days + diag(Days|Subject), data = sleepstudy)
+#' m0_diag <- lme4::lmer(Reaction ~ Days + (1|Subject), data = sleepstudy)
+#' m_slope <- lme4::lmer(Reaction ~ Days + (0 + Days|Subject), data = sleepstudy)
+#' exactRLRT(m_slope, mA_diag, m0_diag)
+#' }
+#'
 #' @export exactRLRT
-#' @importFrom stats anova cov2cor logLik quantile 
+#' @importFrom stats anova cov2cor logLik quantile
 #' @importFrom utils packageVersion
-'exactRLRT' <- function(m, mA = NULL, m0 = NULL, seed = NA, 
-  nsim = 10000, log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
-  parallel = c("no", "multicore", "snow"), 
-  ncpus = 1L, cl = NULL) {
+'exactRLRT' <- function(
+  m,
+  mA = NULL,
+  m0 = NULL,
+  seed = NA,
+  nsim = 10000,
+  log.grid.hi = 8,
+  log.grid.lo = -10,
+  gridlength = 200,
+  parallel = c("no", "multicore", "snow"),
+  ncpus = 1L,
+  cl = NULL
+) {
   if (inherits(m, "spm")) {
     m <- m$fit
     class(m) <- "lme"
   }
   if (any(class(m) %in% c("amer", "mer")))
-    stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
+    stop(
+      "Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported."
+    )
   c.m <- class(m)
-  if (!any(c.m %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest"))) 
+  if (!any(c.m %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest")))
     stop("Invalid <m> specified. \n")
-  if (any(c.m %in% c("merModLmerTest", "lmerModLmerTest"))) 
-    c.m <- "lmerMod"
-  if ("REML" != switch(c.m, 
-    lme = m$method, 
-    lmerMod = ifelse(lme4::isREML(m), "REML", "ML"))){
+  if (any(c.m %in% c("merModLmerTest", "lmerModLmerTest"))) c.m <- "lmerMod"
+  if (
+    "REML" !=
+      switch(
+        c.m,
+        lme = m$method,
+        lmerMod = ifelse(lme4::isREML(m), "REML", "ML")
+      )
+  ) {
     message("Using restricted likelihood evaluated at ML estimators.")
-    message("Refit with method=\"REML\" for exact results.")	
+    message("Refit with method=\"REML\" for exact results.")
   }
-  
-  d <- switch(c.m, lme = extract.lmeDesign(m), 
-    lmerMod = extract.lmerModDesign(m))
+
+  d <- switch(
+    c.m,
+    lme = extract.lmeDesign(m),
+    lmerMod = extract.lmerModDesign(m)
+  )
+
+  # Warn about structured covariances (cs, ar1) in lme4 2.0+ models
+  if (c.m == "lmerMod") {
+    structures <- detect_re_structure(m)
+    structured_cors <- structures[structures %in% c("cs", "ar1")]
+    if (length(structured_cors) > 0) {
+      warning(
+        "Model contains structured covariance(s): ",
+        paste(unique(structured_cors), collapse = ", "),
+        ".\n",
+        "The RLRT extends to these structures via the pseudo-likelihood approach ",
+        "(Greven et al. 2008),\n",
+        "treating the correlation parameter as known (using its REML estimate).\n",
+        "Results may be unreliable if the estimated correlation is unstable ",
+        "(e.g., when tested variance is very small).",
+        call. = FALSE
+      )
+    }
+  }
+
   X <- d$X
   qrX <- qr(X)
   Z <- d$Z
   y <- d$y
   Vr <- d$Vr
   if (all(Vr == 0)) {
-    # this only happens if the estimate of the tested variance component is 0. 
+    # this only happens if the estimate of the tested variance component is 0.
     # since we still want chol(cov2cor(Vr)) to work, this does the trick.
     diag(Vr) <- 1
   }
@@ -137,58 +203,79 @@
   n <- nrow(X)
   p <- ncol(X)
   if (is.null(mA) && is.null(m0)) {
-    if (length(d$lambda) != 1 || d$k != 1) 
-      stop("multiple random effects in model - 
-                 exactRLRT needs <m> with only a single random effect.")
+    if (length(d$lambda) != 1 || d$k != 1)
+      stop(
+        "multiple random effects in model - 
+                 exactRLRT needs <m> with only a single random effect."
+      )
     #2*restricted ProfileLogLik under H0: lambda=0
     res <- qr.resid(qrX, y)
     R <- qr.R(qrX)
     detXtX <- det(t(R) %*% R)
-    reml.H0 <- -((n - p) * log(2 * pi) + (n - p) * log(sum(res^2)) + 
-        log(detXtX) + (n - p) - (n - p) * log(n - p))
+    reml.H0 <- -((n - p) *
+      log(2 * pi) +
+      (n - p) * log(sum(res^2)) +
+      log(detXtX) +
+      (n - p) -
+      (n - p) * log(n - p))
     #observed value of the test-statistic
     reml.obs <- 2 * logLik(m, REML = TRUE)[1]
     rlrt.obs <- max(0, reml.obs - reml.H0)
     lambda <- d$lambda
   } else {
-    nonidentfixmsg <- 
+    nonidentfixmsg <-
       "Fixed effects structures of <mA> and <m0> not identical.
         REML-based inference not appropriate."
     if (c.m == "lme") {
-      if (any(mA$fixDF$terms != m0$fixDF$terms)) 
-        stop(nonidentfixmsg)
+      if (any(mA$fixDF$terms != m0$fixDF$terms)) stop(nonidentfixmsg)
     } else {
       if (c.m == "mer") {
-        if (any(mA@X != m0@X)) 
-          stop(nonidentfixmsg)
+        if (any(mA@X != m0@X)) stop(nonidentfixmsg)
       } else {
         if (c.m == "lmerMod") {
-          if (any(lme4::getME(mA,"X") != lme4::getME(m0,"X")))
+          if (any(lme4::getME(mA, "X") != lme4::getME(m0, "X")))
             stop(nonidentfixmsg)
         }
-      }     
+      }
     }
-    lmer_nm <- if (utils::packageVersion("lme4")<="1.1.21") "Df" else "npar"
+    lmer_nm <- if (utils::packageVersion("lme4") <= "1.1.21") "Df" else "npar"
     ## bug fix submitted by Andrzej Galecki 3/10/2009
-    DFx <- switch(c.m, lme = anova(mA,m0)$df, 
-                  lmerMod = anova(mA, m0, refit = FALSE)[[lmer_nm]]) 
+    DFx <- switch(
+      c.m,
+      lme = anova(mA, m0)$df,
+      lmerMod = anova(mA, m0, refit = FALSE)[[lmer_nm]]
+    )
     if (abs(diff(DFx)) > 1) {
-      stop("Random effects not independent - covariance(s) set to 0 under H0.\n
-                 exactRLRT can only test a single variance.\n")
+      stop(
+        "Random effects not independent - covariance(s) set to 0 under H0.\n
+                 exactRLRT can only test a single variance.\n"
+      )
     }
-    rlrt.obs <- max(0, 2 * (logLik(mA, REML = TRUE)[1] - 
-        logLik(m0, REML = TRUE)[1]))
+    rlrt.obs <- max(
+      0,
+      2 *
+        (logLik(mA, REML = TRUE)[1] -
+          logLik(m0, REML = TRUE)[1])
+    )
   }
   p <- if (rlrt.obs != 0) {
-    sample <- RLRTSim(X, Z, qrX = qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
-      lambda0 = 0, seed = seed, nsim = nsim, 
-      log.grid.hi = log.grid.hi, 
-      log.grid.lo = log.grid.lo, gridlength = gridlength, 
-      parallel = match.arg(parallel), 
-      ncpus = ncpus, cl = cl)
+    sample <- RLRTSim(
+      X,
+      Z,
+      qrX = qrX,
+      sqrt.Sigma = chol(cov2cor(Vr)),
+      lambda0 = 0,
+      seed = seed,
+      nsim = nsim,
+      log.grid.hi = log.grid.hi,
+      log.grid.lo = log.grid.lo,
+      gridlength = gridlength,
+      parallel = match.arg(parallel),
+      ncpus = ncpus,
+      cl = cl
+    )
     if (quantile(sample, 0.9) == 0) {
-      warning("Null distribution has mass ", mean(sample == 
-          0), " at zero.\n")
+      warning("Null distribution has mass ", mean(sample == 0), " at zero.\n")
     }
     mean(rlrt.obs < sample)
   } else {
@@ -196,11 +283,18 @@
     nsim <- 0
     sample <- NULL
     1
-  }  
-  RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 
-    method = paste("simulated finite sample distribution of RLRT.\n
-                                (p-value based on", 
-      nsim, "simulated values)"), sample = sample)
+  }
+  RVAL <- list(
+    statistic = c(RLRT = rlrt.obs),
+    p.value = p,
+    method = paste(
+      "simulated finite sample distribution of RLRT.\n
+                                (p-value based on",
+      nsim,
+      "simulated values)"
+    ),
+    sample = sample
+  )
   class(RVAL) <- "htest"
   return(RVAL)
-} 
+}

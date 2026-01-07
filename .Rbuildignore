@@ -9,3 +9,4 @@ revdep
 ^\.travis\.yml$
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
+tests

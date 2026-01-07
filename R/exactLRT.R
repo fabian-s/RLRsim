@@ -1,11 +1,11 @@
 #' Likelihood Ratio Tests for simple linear mixed models
-#' 
+#'
 #' This function provides an exact likelihood ratio test based on simulated
 #' values from the finite sample distribution for simultaneous testing of the
 #' presence of the variance component and some restrictions of the fixed
 #' effects in a simple linear mixed model with known correlation structure of
 #' the random effect and i.i.d. errors.
-#' 
+#'
 #' The model under the alternative must be a linear mixed model
 #' \eqn{y=X\beta+Zb+\varepsilon}{y=X*beta+Z*b+epsilon} with a \emph{single}
 #' random effect \eqn{b} with known correlation structure and error terms that
@@ -19,7 +19,7 @@
 #' \beta^0_{p}\;\;\mbox{or}\;Var(b)>0}{H0: beta_1 \neq beta0_1,..or..,beta_q
 #' \neq beta0_q ot Var(b)>0} We use the exact finite sample distribution of the
 #' likelihood ratio test statistic as derived by Crainiceanu & Ruppert (2004).
-#' 
+#'
 #' @param m The fitted model under the alternative; of class \code{lme},
 #' \code{lmerMod} or \code{spm}
 #' @param m0 The fitted model under the null hypothesis; of class \code{lm}
@@ -56,10 +56,10 @@
 #' Statistical Society: Series B},\bold{66},165--185.
 #' @keywords htest
 #' @examples
-#' 
+#'
 #' library(nlme);
 #' data(Orthodont);
-#' 
+#'
 #' ##test for Sex:Age interaction and Subject-Intercept
 #' mA<-lme(distance ~ Sex * I(age - 11), random = ~ 1| Subject,
 #'   data = Orthodont, method = "ML")
@@ -67,34 +67,67 @@
 #' summary(mA)
 #' summary(m0)
 #' exactLRT(m = mA, m0 = m0)
-#' 
+#'
 #' @export exactLRT
 #' @importFrom stats coefficients
 `exactLRT` <-
-  function(m, m0, seed = NA, nsim = 10000, 
-    log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
-    parallel = c("no", "multicore", "snow"), 
-    ncpus = 1L, cl = NULL) 
-  {
-    if (!inherits(m0, "lm")) 
-      stop("m0 not an lm-object. \n")
+  function(
+    m,
+    m0,
+    seed = NA,
+    nsim = 10000,
+    log.grid.hi = 8,
+    log.grid.lo = -10,
+    gridlength = 200,
+    parallel = c("no", "multicore", "snow"),
+    ncpus = 1L,
+    cl = NULL
+  ) {
+    if (!inherits(m0, "lm")) stop("m0 not an lm-object. \n")
     if (inherits(m, "spm")) {
       m <- m$fit
       class(m) <- "lme"
     }
     if (any(class(m) %in% c("amer", "mer")))
-      stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
+      stop(
+        "Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported."
+      )
     c.m <- class(m)
-    if (!any(c.m %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest"))) 
+    if (!any(c.m %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest")))
       stop("Invalid <m> specified. \n")
     if (c.m %in% c("merModLmerTest", "lmerModLmerTest")) {
       c.m <- "lmerMod"
-    }  
-    d <- switch(c.m, lme = extract.lmeDesign(m), 
-      lmerMod=extract.lmerModDesign(m))
-    if (length(d$lambda) != 1 || d$k != 1) 
-      stop("multiple random effects in model - 
-                 exactLRT needs <m> with only a single random effect.")
+    }
+    d <- switch(
+      c.m,
+      lme = extract.lmeDesign(m),
+      lmerMod = extract.lmerModDesign(m)
+    )
+
+    # Warn about structured covariances (cs, ar1) in lme4 2.0+ models
+    if (c.m == "lmerMod") {
+      structures <- detect_re_structure(m)
+      structured_cors <- structures[structures %in% c("cs", "ar1")]
+      if (length(structured_cors) > 0) {
+        warning(
+          "Model contains structured covariance(s): ",
+          paste(unique(structured_cors), collapse = ", "),
+          ".\n",
+          "The LRT extends to these structures via the pseudo-likelihood approach ",
+          "(Greven et al. 2008),\n",
+          "treating the correlation parameter as known (using its REML estimate).\n",
+          "Results may be unreliable if the estimated correlation is unstable ",
+          "(e.g., when tested variance is very small).",
+          call. = FALSE
+        )
+      }
+    }
+
+    if (length(d$lambda) != 1 || d$k != 1)
+      stop(
+        "multiple random effects in model - 
+                 exactLRT needs <m> with only a single random effect."
+      )
     X <- d$X
     Z <- d$Z
     y <- d$y
@@ -103,38 +136,59 @@
     n <- NROW(X)
     p <- NCOL(X)
     q <- p - length(coefficients(m0)[!is.na(coefficients(m0))])
-    if (n != length(m0$fitted)) 
+    if (n != length(m0$fitted))
       stop("different data under the null and alternative. \n")
-    if (q < 0) 
-      stop("m0 not nested in m. \n")
-    if (n - p - K < 1) 
-      stop("No. of effects greater than no. of observations. Reduce model complexity.\n")
-    if (q == 0) 
-      message("No restrictions on fixed effects. REML-based inference preferable.")
-    method <- switch(c.m, lme = m$method, 
-      lmerMod=ifelse(lme4::isREML(m), "REML", "ML"))
+    if (q < 0) stop("m0 not nested in m. \n")
+    if (n - p - K < 1)
+      stop(
+        "No. of effects greater than no. of observations. Reduce model complexity.\n"
+      )
+    if (q == 0)
+      message(
+        "No restrictions on fixed effects. REML-based inference preferable."
+      )
+    method <- switch(
+      c.m,
+      lme = m$method,
+      lmerMod = ifelse(lme4::isREML(m), "REML", "ML")
+    )
     if (method != "ML") {
       message("Using likelihood evaluated at REML estimators.")
       message("Please refit model with method=\"ML\" for exact results.")
     }
     #observed value of the LRT
-    lrt.obs <- max(0, 2 * logLik(m, REML = FALSE)[1] - 2 * logLik(m0, 
-      REML = FALSE)[1])
-    sample <- LRTSim(X, Z, q, sqrt.Sigma = chol(cov2cor(Vr)), 
-      seed = seed, nsim = nsim, log.grid.hi = log.grid.hi, 
-      log.grid.lo = log.grid.lo, gridlength = gridlength,
-      parallel = match.arg(parallel), 
-      ncpus = ncpus, cl = cl)
+    lrt.obs <- max(
+      0,
+      2 * logLik(m, REML = FALSE)[1] - 2 * logLik(m0, REML = FALSE)[1]
+    )
+    sample <- LRTSim(
+      X,
+      Z,
+      q,
+      sqrt.Sigma = chol(cov2cor(Vr)),
+      seed = seed,
+      nsim = nsim,
+      log.grid.hi = log.grid.hi,
+      log.grid.lo = log.grid.lo,
+      gridlength = gridlength,
+      parallel = match.arg(parallel),
+      ncpus = ncpus,
+      cl = cl
+    )
     if (quantile(sample, 0.9) == 0) {
-      warning("Null distribution has mass ", mean(sample == 
-          0), " at zero.\n")
+      warning("Null distribution has mass ", mean(sample == 0), " at zero.\n")
     }
     p <- mean(lrt.obs < sample)
-    RVAL <- list(statistic = c(LRT = lrt.obs), 
-      p.value = p, 
-      method = paste("simulated finite sample distribution of LRT. (p-value based on", 
-        nsim, "simulated values)"), sample=sample)
+    RVAL <- list(
+      statistic = c(LRT = lrt.obs),
+      p.value = p,
+      method = paste(
+        "simulated finite sample distribution of LRT. (p-value based on",
+        nsim,
+        "simulated values)"
+      ),
+      sample = sample
+    )
     class(RVAL) <- "htest"
     return(RVAL)
-  } 
-
+  }
