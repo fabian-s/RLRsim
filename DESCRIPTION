@@ -24,4 +24,5 @@ Imports:
     nlme
 LinkingTo: Rcpp
 Enhances: lmerTest
+Remotes: lme4/lme4
 RoxygenNote: 7.1.2
