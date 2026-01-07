@@ -10,3 +10,4 @@ revdep
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
 tests
+.github
